@@ -4,7 +4,6 @@ from swarm import Swarm, Agent
 from datetime import datetime
 from dotenv import load_dotenv
 import logging
-import pandas as pd
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -28,41 +27,20 @@ def search_sa_prices(item):
     """Search for product prices across South African retailers"""
     try:
         with DDGS() as ddg:
-            # Add price history tracking
-            price_history = pd.DataFrame(columns=['date', 'store', 'price', 'item'])
-            
-            # Improved search filters
-            retailers = ['Makro', 'Checkers', 'Shoprite', 'Woolworths', 'Pick n Pay']
-            all_results = []
-            
-            for retailer in retailers:
-                results = ddg.text(
-                    f"{item} price {retailer} South Africa {datetime.now().strftime('%Y-%m')}", 
-                    max_results=3
-                )
-                if results:
-                    all_results.extend(results)
-
-            if all_results:
+            # Search for current prices including major SA retailers
+            results = ddg.text(
+                f"{item} price South Africa Makro Checkers Shoprite Woolworths PnP {datetime.now().strftime('%Y-%m')}", 
+                max_results=5
+            )
+            if results:
                 price_results = "\n\n".join([
-                    f"Store: {result['title'].split('-')[0].strip()}\n"
-                    f"Product: {result['title']}\n"
-                    f"URL: {result['href']}\n"
-                    f"Details: {result['body']}\n"
-                    f"Timestamp: {datetime.now().strftime('%Y-%m-%d')}"
-                    for result in all_results
+                    f"Store: {result['title'].split('-')[0].strip()}\nProduct: {result['title']}\nURL: {result['href']}\nDetails: {result['body']}\nTimestamp: {datetime.now().strftime('%Y-%m-%d')}" 
+                    for result in results
                 ])
                 return price_results
-            
-            return f"No price information found for {item} in any major retailers."
-            
+            return f"No price information found for {item}."
     except Exception as e:
         logger.error(f"Error in search_sa_prices: {str(e)}")
-        # More detailed error handling
-        if isinstance(e, ConnectionError):
-            return "Network error: Please check your internet connection"
-        elif isinstance(e, TimeoutError):
-            return "Search timed out: Please try again"
         return f"Error searching prices: {str(e)}"
 
 # Enhanced Agent Definitions for SA Market
@@ -194,11 +172,6 @@ def process_shopping_list(items):
     """Process shopping list and find best deals across SA stores"""
     try:
         with st.status("Processing shopping list...", expanded=True) as status:
-            # Add progress tracking
-            progress_bar = st.progress(0)
-            total_steps = len(items) * 3  # search, analyze, recommend
-            current_step = 0
-            
             # Price Search Phase
             status.write("🔍 Searching for prices...")
             all_prices = []
@@ -208,10 +181,6 @@ def process_shopping_list(items):
                     messages=[{"role": "user", "content": f"Find current prices for {item} in South African stores"}]
                 )
                 all_prices.append(search_response.messages[-1]["content"])
-                
-                # Update progress
-                current_step += 1
-                progress_bar.progress(current_step / total_steps)
             
             raw_prices = "\n\n---\n\n".join(all_prices)
             
@@ -225,13 +194,6 @@ def process_shopping_list(items):
                 }]
             )
             price_analysis = analysis_response.messages[-1]["content"]
-            
-            # Update progress
-            current_step += 1
-            progress_bar.progress(current_step / total_steps)
-            
-            # Add price trends
-            status.write("📈 Analyzing price trends...")
             
             # Recommendation Phase
             status.write("📋 Creating shopping plan...")
@@ -335,10 +297,6 @@ if process_button:
                 with tabs[1]:
                     st.markdown("### 🔍 Raw Price Data")
                     st.markdown(raw_prices)
-            
-            # Add price comparison chart
-            st.subheader("Price Comparison Chart")
-            # Create and display comparison chart here
             
         except Exception as e:
             st.error(f"An error occurred during processing: {str(e)}")

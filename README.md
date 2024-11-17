@@ -44,5 +44,5 @@ OPENAI_API_KEY=api-key
 ```
 6. Run the Streamlit app
 ```bash
-streamlit smart_shopper_agent.py
+streamlit run smart_shopper_agent.py
 ```
