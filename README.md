@@ -8,10 +8,31 @@ This project implements a virtual marketplace where multiple AI agents interact 
 
 ## Features
 
-- Multiple agent types (Shoppers, Store managers, Inventory managers)
-- Price comparison and negotiation capabilities
-- Dynamic inventory management
-- Shopping behavior analysis
+- **Price Search Agent**: Searches and compares prices across major South African retailers including:
+  - Makro
+  - Checkers
+  - Shoprite
+  - Woolworths
+  - Pick n Pay
+
+- **Price Analysis Agent**: 
+  - Compares unit prices across stores
+  - Identifies best deals and savings
+  - Analyzes loyalty program benefits
+  - Calculates potential savings
+
+- **Shopping Recommendation Agent**:
+  - Creates optimized shopping plans
+  - Considers store proximity and delivery options
+  - Factors in loyalty programs (Smart Shopper, Xtra Savings, WRewards)
+  - Provides regional-specific recommendations
+
+- **User Interface**:
+  - Interactive shopping list management
+  - Region selection for accurate pricing
+  - Detailed price analysis views
+  - Shopping plan recommendations
+  - Loyalty program benefit summaries
 
 ## Setup
 
@@ -46,3 +67,7 @@ OPENAI_API_KEY=api-key
 ```bash
 streamlit run smart_shopper_agent.py
 ```
+
+## smart_shopper_agent.py
+
+The `smart_shopper_agent.py` script is the main entry point for running the Smart Shopper Agents application. It initializes the Streamlit app, sets up the agent environment, and handles user interactions. The script allows users to simulate shopping scenarios, analyze agent behavior, and visualize the results.
