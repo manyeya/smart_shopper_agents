@@ -38,7 +38,7 @@ This project implements a virtual marketplace where multiple AI agents interact 
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/yourusername/smart-shopper-agents.git
+   git clone https://github.com/manyeya/smart-shopper-agents.git
    ```
 2. Navigate to the project directory:
    ```sh
